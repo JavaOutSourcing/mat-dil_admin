@@ -1,6 +1,6 @@
 package com.sparta.mat_dil_admin.dto;
 
-import com.sparta.mat_dil.enums.ResponseStatus;
+import com.sparta.mat_dil_admin.enums.ResponseStatus;
 import lombok.Getter;
 
 @Getter

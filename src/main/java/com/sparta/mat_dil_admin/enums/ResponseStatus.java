@@ -38,7 +38,9 @@ public enum ResponseStatus {
     ALL_USERS_FETCH_SUCCESS(HttpStatus.OK, "전체 유저 조회 성공"),
     SINGLE_USERS_FETCH_SUCCESS(HttpStatus.OK, "유저 조회 성공"),
     UPDATE_USER_ADMIN_SUCCESS(HttpStatus.OK, "관리자로 변경 성공"),
-    UPDATE_USER_CONSUMER_SUCCESS(HttpStatus.OK, "구매자로 변경 성공")
+    UPDATE_USER_CONSUMER_SUCCESS(HttpStatus.OK, "구매자로 변경 성공"),
+    USER_DELETE_SUCCESS(HttpStatus.OK, "회원 삭제에 성공하였습니다."),
+    USER_BLOCK_SUCCESS(HttpStatus.OK, "회원 차단에 성공하였습니다.")
     ;
     private final HttpStatus httpStatus;
     private final String message;
