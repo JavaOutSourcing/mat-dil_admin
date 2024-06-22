@@ -42,7 +42,7 @@ public class User extends Timestamped{
     @Enumerated(value = EnumType.STRING)
     private UserType userType;
 
-    @Column
+    @Column()
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
 

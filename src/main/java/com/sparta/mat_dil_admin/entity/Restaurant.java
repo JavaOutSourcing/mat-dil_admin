@@ -21,7 +21,20 @@ public class Restaurant extends Timestamped{
     @Column(nullable = false)
     private String description;
 
+    @Column
+    private Boolean pinned;
+
+    @Column(nullable = false)
+    private Long likes = 0L;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public void pinnedFalse(){
+        this.pinned = false;
+    }
+    public void pinnedTrue(){
+        this.pinned = true;
+    }
 }
