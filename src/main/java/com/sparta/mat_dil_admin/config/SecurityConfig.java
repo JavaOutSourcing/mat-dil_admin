@@ -1,6 +1,8 @@
 package com.sparta.mat_dil_admin.config;
 
+import com.sparta.mat_dil_admin.jwt.JwtAuthenticationEntryPoint;
 import com.sparta.mat_dil_admin.jwt.JwtAuthorizationFilter;
+import com.sparta.mat_dil_admin.jwt.JwtExceptionFilter;
 import com.sparta.mat_dil_admin.jwt.JwtUtil;
 import com.sparta.mat_dil_admin.repository.UserRepository;
 import com.sparta.mat_dil_admin.security.UserDetailsServiceImpl;
@@ -8,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,8 +28,7 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
-    private final AuthenticationConfiguration authenticationConfiguration;
-    private final UserRepository userRepository;
+    //private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -44,6 +46,11 @@ public class SecurityConfig {
     }
 
     @Bean
+    public JwtExceptionFilter jwtExceptionFilter(){
+        return new JwtExceptionFilter();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.csrf((csrf) -> csrf.disable());
 
@@ -55,7 +62,10 @@ public class SecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                         .anyRequest().authenticated());
 
+        //http.exceptionHandling((exception) -> exception.authenticationEntryPoint(jwtAuthenticationEntryPoint));
         http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtExceptionFilter(), JwtAuthorizationFilter.class);
+
         return http.build();
 
     }
