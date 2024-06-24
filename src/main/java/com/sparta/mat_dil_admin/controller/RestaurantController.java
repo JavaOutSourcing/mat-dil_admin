@@ -2,14 +2,11 @@ package com.sparta.mat_dil_admin.controller;
 
 import com.sparta.mat_dil_admin.dto.*;
 import com.sparta.mat_dil_admin.enums.ResponseStatus;
-import com.sparta.mat_dil_admin.service.RestaurantService;
 import com.sparta.mat_dil_admin.security.UserDetailsImpl;
-import lombok.AllArgsConstructor;
+import com.sparta.mat_dil_admin.service.RestaurantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.jdbc.support.CustomSQLErrorCodesTranslation;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -57,7 +54,7 @@ public class RestaurantController {
         return ResponseEntity.ok(new ResponseMessageDto(ResponseStatus.RESTAURANT_DELETE_SUCCESS));
     }
 
-    //특정 음식 삭제
+    //음식 댓글 삭제
     @DeleteMapping("/{restaurantId}/comments/{commentId}")
     public ResponseEntity<ResponseMessageDto> deleteComment(@PathVariable Long restaurantId, @PathVariable Long commentId,
                                                          @AuthenticationPrincipal UserDetailsImpl userDetails){

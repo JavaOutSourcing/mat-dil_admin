@@ -22,14 +22,4 @@ public class RestaurantLike extends Timestamped {
 
     @Column(nullable = false)
     private boolean Liked;
-
-    public RestaurantLike(User user, Restaurant restaurant) {
-        this.user = user;
-        this.restaurant = restaurant;
-        this.Liked = false;
-    }
-
-    public void update() {
-        this.Liked = !this.Liked;
-    }
 }

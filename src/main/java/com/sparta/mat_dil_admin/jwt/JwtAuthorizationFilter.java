@@ -34,17 +34,21 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
 
         String tokenValue = jwtUtil.getAccessTokenFromRequest(req);
-        log.info(tokenValue);
+        String refreshToken = jwtUtil.getRefreshTokenFromRequest(req);
 
         if (StringUtils.hasText(tokenValue)) {
             // JWT 토큰 substring
             tokenValue = jwtUtil.substringToken(tokenValue);
-            log.info(tokenValue);
-
 
             if (!jwtUtil.validateToken(tokenValue)) {
-                log.error("Token Error");
-                return;
+                if(StringUtils.hasText(refreshToken)){
+                    refreshToken = jwtUtil.substringToken(refreshToken);
+                    if(!jwtUtil.validateRefreshToken(refreshToken)){
+                        log.error("RefreshToken Error");
+                        return;
+                    }
+                    jwtUtil.addJwtToCookie(JwtUtil.BEARER_PREFIX + tokenValue, JwtUtil.BEARER_PREFIX + refreshToken, res);
+                }
             }
 
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
@@ -56,14 +60,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 throw new CustomException(ErrorType.NOT_FOUND_AUTHENTICATION_INFO);
             }
         }
+
         filterChain.doFilter(req, res);
     }
 
     // 인증 처리
     public void setAuthentication(String username) {
+        log.error(username);
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         Authentication authentication = createAuthentication(username);
         context.setAuthentication(authentication);
+
         SecurityContextHolder.setContext(context);
     }
 

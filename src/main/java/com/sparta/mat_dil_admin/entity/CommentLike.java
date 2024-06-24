@@ -22,14 +22,4 @@ public class CommentLike extends Timestamped {
 
     @Column(nullable = false)
     private boolean Liked = false;
-
-    public CommentLike(User user, Comment comment) {
-        this.user = user;
-        this.comment = comment;
-        this.Liked = false;
-    }
-
-    public void update() {
-        this.Liked = !this.Liked;
-    }
 }

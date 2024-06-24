@@ -18,6 +18,7 @@ public enum ErrorType {
     PASSWORD_RECENTLY_USED(HttpStatus.LOCKED, "최근에 사용한 비밀번호는 사용할 수 없습니다."),
     USER_ALREADY_BLOCKED(HttpStatus.CONFLICT, "이미 차단된 회원입니다."),
     DUPLICATE_EMAIL(HttpStatus.LOCKED, "중복된 이메일이 존재합니다."),
+    USER_TYPE_SUPPLIER(HttpStatus.LOCKED, "판매자는 관리자로 변경할 수 없습니다."),
 
     // restaurant,
     NOT_FOUND_RESTAURANT(HttpStatus.NOT_FOUND, "존재하지 않는 음식점입니다."),

@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -26,6 +28,8 @@ public class Food extends Timestamped {
     @JoinColumn(name = "restaurant_id")
     private Restaurant restaurant;
 
+    @OneToMany(mappedBy = "food", orphanRemoval = true)
+    private List<OrderDetails> orderDetails;
 }
 
 

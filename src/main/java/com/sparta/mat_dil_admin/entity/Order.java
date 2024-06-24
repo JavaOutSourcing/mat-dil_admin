@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -27,4 +29,7 @@ public class Order extends Timestamped {
 
     @Column(nullable = false)
     private int total_price;
+
+    @OneToMany(mappedBy = "order", orphanRemoval = true)
+    private List<OrderDetails> orderDetails;
 }

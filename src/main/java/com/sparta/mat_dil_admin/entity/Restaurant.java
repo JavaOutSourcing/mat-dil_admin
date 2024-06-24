@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor
@@ -30,6 +32,12 @@ public class Restaurant extends Timestamped{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RestaurantLike> restaurantLikes;
+
+    @OneToMany(mappedBy = "restaurant", orphanRemoval = true)
+    private List<Order> orders;
 
     public void pinnedFalse(){
         this.pinned = false;

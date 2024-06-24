@@ -36,6 +36,11 @@ public class UserService {
     public UserRoleUpdateResponse updateUserRole(Long userId, User currentUser) {
         User user = validateUser(userId);
         validateAdminUser(currentUser);
+
+        if(user.getUserType().equals(UserType.SUPPLIER)){
+            throw new CustomException(ErrorType.USER_TYPE_SUPPLIER);
+        }
+
         boolean isAdmin = user.updateRole(user.getUserType());
         return new UserRoleUpdateResponse(new UserResponseDto(user), isAdmin);
 
@@ -44,8 +49,8 @@ public class UserService {
     //유저 프로필 수정
     @Transactional
     public UserProfileResponseDto updateUser(Long userId, User currentUser, UserProfileRequestDto userProfileRequestDto) {
-        User user = validateUser(userId);
         validateAdminUser(currentUser);
+        User user = validateUser(userId);
 
         //동일 아이디 검증
         validateUserId(userProfileRequestDto.getAccountId());
@@ -60,16 +65,16 @@ public class UserService {
     //유저 삭제
     @Transactional
     public void deleteUser(Long userId, User currentUser) {
-        User user = validateUser(userId);
         validateAdminUser(currentUser);
+        User user = validateUser(userId);
         userRepository.delete(user);
     }
 
     //유저 차단
     @Transactional
     public UserProfileResponseDto blockUser(Long userId, User currentUser) {
-        User user = validateUser(userId);
         validateAdminUser(currentUser);
+        User user = validateUser(userId);
         if (user.getUserStatus().equals(UserStatus.BLOCKED)) {
             throw new CustomException(ErrorType.USER_ALREADY_BLOCKED);
         }
