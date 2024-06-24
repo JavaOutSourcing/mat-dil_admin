@@ -18,9 +18,12 @@ public enum ErrorType {
     PASSWORD_RECENTLY_USED(HttpStatus.LOCKED, "최근에 사용한 비밀번호는 사용할 수 없습니다."),
     USER_ALREADY_BLOCKED(HttpStatus.CONFLICT, "이미 차단된 회원입니다."),
     DUPLICATE_EMAIL(HttpStatus.LOCKED, "중복된 이메일이 존재합니다."),
+    USER_TYPE_SUPPLIER(HttpStatus.LOCKED, "판매자는 관리자로 변경할 수 없습니다."),
 
     // restaurant,
     NOT_FOUND_RESTAURANT(HttpStatus.NOT_FOUND, "존재하지 않는 음식점입니다."),
+
+    NOT_FOUND_FOOD(HttpStatus.NOT_FOUND, "존재하지 않는 음식입니다."),
 
     // comment,
     NOT_FOUND_COMMENT(HttpStatus.NOT_FOUND, "존재하지 않는 댓글입니다."),
@@ -28,7 +31,11 @@ public enum ErrorType {
 
     // JWT
     INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 리프레시 토큰입니다. 다시 로그인 해주세요."),
+    NOT_FOUND_AUTHENTICATION_INFO(HttpStatus.NOT_FOUND, "인증 정보를 찾을 수 없습니다."),
     INVALID_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다. 다시 로그인 해주세요."),
+    LOGGED_OUT_TOKEN(HttpStatus.FORBIDDEN, "이미 로그아웃된 토큰입니다."),
+    INVALID_JWT(HttpStatus.UNAUTHORIZED, "유효하지 않는 JWT 입니다."),
+    EXPIRED_JWT(HttpStatus.FORBIDDEN, "만료된 JWT 입니다."),
 
     REQUIRES_LOGIN(HttpStatus.LOCKED, "로그인이 필요한 서비스입니다.")
     ;

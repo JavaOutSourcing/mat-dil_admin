@@ -27,6 +27,7 @@ public enum ResponseStatus {
     FOOD_CHECK_SUCCESS(HttpStatus.OK, "음식 조회에 성공하였습니다."),
     FOOD_UPDATE_SUCCESS(HttpStatus.OK, "음식 수정에 성공하였습니다."),
     FOOD_DELETE_SUCCESS(HttpStatus.OK, "음식이 삭제되었습니다."),
+    FOOD_TOP_SUCCESS(HttpStatus.OK, "해당 음식점을 상단에 고정하였습니다"),
     // 주문
     ORDER_CHECK_SUCCESS(HttpStatus.OK, "주문 조회에 성공하였습니다."),
     // 댓글
@@ -40,7 +41,10 @@ public enum ResponseStatus {
     UPDATE_USER_ADMIN_SUCCESS(HttpStatus.OK, "관리자로 변경 성공"),
     UPDATE_USER_CONSUMER_SUCCESS(HttpStatus.OK, "구매자로 변경 성공"),
     USER_DELETE_SUCCESS(HttpStatus.OK, "회원 삭제에 성공하였습니다."),
-    USER_BLOCK_SUCCESS(HttpStatus.OK, "회원 차단에 성공하였습니다.")
+    USER_BLOCK_SUCCESS(HttpStatus.OK, "회원 차단에 성공하였습니다."),
+    // [ADMIN]
+    // 공지
+    ANNOUNCEMENT_POST_CREATE_SUCCESS(HttpStatus.OK, "공지 등록에 성공하였습니다.")
     ;
     private final HttpStatus httpStatus;
     private final String message;

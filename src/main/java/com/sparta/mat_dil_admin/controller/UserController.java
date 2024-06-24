@@ -28,7 +28,7 @@ public class UserController {
     }
 
     //유저 권한 변경
-    @PatchMapping("/{userId}")
+    @PatchMapping("/{userId}/role")
     public ResponseEntity<ResponseDataDto<UserResponseDto>> updateUserRole(@PathVariable Long userId,
                                                                            @AuthenticationPrincipal UserDetailsImpl userDetails) {
         UserRoleUpdateResponse userRole = userService.updateUserRole(userId, userDetails.getUser());
@@ -36,6 +36,7 @@ public class UserController {
 
         return ResponseEntity.ok(new ResponseDataDto<>(responseStatus, userRole.getUserResponseDto()));
     }
+
 
     //특정 회원 정보 수정
     @PutMapping("/{userId}")
@@ -56,12 +57,20 @@ public class UserController {
     }
 
     //특정 회원 차단
-    @PatchMapping("/{userId}")
+    @PatchMapping("/{userId}/block")
     public ResponseEntity<ResponseDataDto<UserProfileResponseDto>> blockUser(@PathVariable Long userId,
                                                                              @AuthenticationPrincipal UserDetailsImpl userDetails){
         UserProfileResponseDto responseDto = userService.blockUser(userId, userDetails.getUser());
 
         return ResponseEntity.ok(new ResponseDataDto<>(ResponseStatus.USER_BLOCK_SUCCESS, responseDto));
+    }
+
+    //공지글 등록
+    @PostMapping("/announcements")
+    public ResponseEntity<ResponseDataDto<AnnouncementResponseDto>> createAnnounce(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                                   @RequestBody AnnouncementRequestDto requestDto){
+        AnnouncementResponseDto responseDto = userService.createAnnounce(userDetails.getUser(), requestDto);
+        return ResponseEntity.ok(new ResponseDataDto<>(ResponseStatus.ANNOUNCEMENT_POST_CREATE_SUCCESS, responseDto));
     }
 
 }

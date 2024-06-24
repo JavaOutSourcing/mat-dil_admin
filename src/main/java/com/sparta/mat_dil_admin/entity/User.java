@@ -46,8 +46,8 @@ public class User extends Timestamped{
     @Enumerated(value = EnumType.STRING)
     private UserStatus userStatus;
 
-    @ElementCollection
-    private List<String> passwordHistory = new ArrayList<>();
+    @Column
+    private Long kakaoId;
 
     public boolean updateRole(UserType userType){
         if(userType.equals(UserType.ADMIN)){

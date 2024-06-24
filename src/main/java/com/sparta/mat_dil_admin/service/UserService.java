@@ -1,14 +1,13 @@
 package com.sparta.mat_dil_admin.service;
 
-import com.sparta.mat_dil_admin.dto.UserProfileRequestDto;
-import com.sparta.mat_dil_admin.dto.UserProfileResponseDto;
-import com.sparta.mat_dil_admin.dto.UserResponseDto;
-import com.sparta.mat_dil_admin.dto.UserRoleUpdateResponse;
+import com.sparta.mat_dil_admin.dto.*;
+import com.sparta.mat_dil_admin.entity.AnnouncementPost;
 import com.sparta.mat_dil_admin.entity.User;
 import com.sparta.mat_dil_admin.entity.UserStatus;
 import com.sparta.mat_dil_admin.entity.UserType;
 import com.sparta.mat_dil_admin.enums.ErrorType;
 import com.sparta.mat_dil_admin.exception.CustomException;
+import com.sparta.mat_dil_admin.repository.AnnouncementPostRepository;
 import com.sparta.mat_dil_admin.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,11 +21,12 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AnnouncementPostRepository announcementPostRepository;
 
     //유저 전체 조회
     @Transactional(readOnly = true)
-    public List<UserResponseDto> getAllUser(User user) {
-        validateAdminUser(user);
+    public List<UserResponseDto> getAllUser(User currentUser) {
+        validateAdminUser(currentUser);
         List<User> userList = userRepository.findAll();
         return userList.stream().map(UserResponseDto::new).toList();
     }
@@ -34,9 +34,14 @@ public class UserService {
     //유저 권한 변경
     @Transactional
     public UserRoleUpdateResponse updateUserRole(Long userId, User currentUser) {
+        User user = validateUser(userId);
         validateAdminUser(currentUser);
-        User user = findUserById(userId);
-        boolean isAdmin = user.updateRole(currentUser.getUserType());
+
+        if(user.getUserType().equals(UserType.SUPPLIER)){
+            throw new CustomException(ErrorType.USER_TYPE_SUPPLIER);
+        }
+
+        boolean isAdmin = user.updateRole(user.getUserType());
         return new UserRoleUpdateResponse(new UserResponseDto(user), isAdmin);
 
     }
@@ -45,14 +50,14 @@ public class UserService {
     @Transactional
     public UserProfileResponseDto updateUser(Long userId, User currentUser, UserProfileRequestDto userProfileRequestDto) {
         validateAdminUser(currentUser);
-        User user = findUserById(userId);
-
-        user.updateUserProfile(userProfileRequestDto);
+        User user = validateUser(userId);
 
         //동일 아이디 검증
-        validateUserId(user.getAccountId());
+        validateUserId(userProfileRequestDto.getAccountId());
         //동일 이메일 검증
-        validateUserEmail(user.getEmail());
+        validateUserEmail(userProfileRequestDto.getEmail());
+
+        user.updateUserProfile(userProfileRequestDto);
 
         return new UserProfileResponseDto(user);
     }
@@ -61,15 +66,15 @@ public class UserService {
     @Transactional
     public void deleteUser(Long userId, User currentUser) {
         validateAdminUser(currentUser);
-        User user = findUserById(userId);
-        User deleteUser = userRepository.findById(userId).orElse(null);
+        User user = validateUser(userId);
+        userRepository.delete(user);
     }
 
     //유저 차단
     @Transactional
     public UserProfileResponseDto blockUser(Long userId, User currentUser) {
         validateAdminUser(currentUser);
-        User user = findUserById(userId);
+        User user = validateUser(userId);
         if (user.getUserStatus().equals(UserStatus.BLOCKED)) {
             throw new CustomException(ErrorType.USER_ALREADY_BLOCKED);
         }
@@ -77,18 +82,34 @@ public class UserService {
         return new UserProfileResponseDto(user);
     }
 
-    // 유저 존재 검증
-    private User findUserById(Long id) {
-        return userRepository.findById(id).orElseThrow(() ->
+    //공지글 게시
+    @Transactional
+    public AnnouncementResponseDto createAnnounce(User user, AnnouncementRequestDto requestDto) {
+        validateAdminUser(user);
+        validateUser(user.getId());
+        AnnouncementPost announcementPost = new AnnouncementPost(requestDto);
+        announcementPostRepository.save(announcementPost);
+
+        return new AnnouncementResponseDto(announcementPost);
+    }
+
+    // 유저 존재 검증 및 탈퇴 유저 검증
+    private User validateUser(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() ->
                 new CustomException(ErrorType.NOT_FOUND_USER));
+        if(user.getUserStatus().equals(UserStatus.DEACTIVATE)){
+            throw new CustomException(ErrorType.DEACTIVATE_USER);
+        }
+
+        return user;
     }
 
     // 관리자 검증 및 탈퇴한 회원 검증
     private void validateAdminUser(User user) {
-        if (user.getUserType() != UserType.ADMIN) {
+        if (!user.getUserType().equals(UserType.ADMIN)) {
             throw new CustomException(ErrorType.NO_AUTHENTICATION);
         }
-        if (user.getUserStatus() == UserStatus.DEACTIVATE) {
+        if (user.getUserStatus().equals(UserStatus.DEACTIVATE)) {
             throw new CustomException(ErrorType.DEACTIVATE_USER);
         }
     }
