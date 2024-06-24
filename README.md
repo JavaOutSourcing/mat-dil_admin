@@ -16,7 +16,7 @@
 <br>
 
 ### NOTICE
-- `구매자` , `판매자` 로 구분하여 서비스를 다르게 활용하고 이용할 수 있습니다.[서비스](https://github.com/JavaOutSourcing/mat-dil_admin)
+- `구매자` , `판매자` 로 구분하여 서비스를 다르게 활용하고 이용할 수 있습니다. [서비스 레포지토리](https://github.com/JavaOutSourcing/mat-dil_admin)
 - `관리자`는 admin을 통하여 서비스를 관리할 수 있습니다.
 
 <br>
